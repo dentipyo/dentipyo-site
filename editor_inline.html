@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>바로 편집 에디터 (WYSIWYG)</title>
+<meta name="color-scheme" content="light dark">
+<style>
+  :root{--bg:#f6f8fb;--ink:#0b132b;--line:#e5e8ef;--panel:#ffffff;--accent:#1849ab}
+  @media (prefers-color-scheme: dark){:root{--bg:#0e1423;--ink:#e6e9f2;--line:#25314a;--panel:#151c2e;--accent:#4d7cff}}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Apple SD Gothic Neo,Noto Sans KR,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+  header{position:sticky;top:0;background:var(--panel);border-bottom:1px solid var(--line);padding:10px 12px;z-index:10;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+  header .title{font-weight:700}
+  .toolbar{display:flex;gap:6px;flex-wrap:wrap}
+  button{border:1px solid var(--line);background:var(--panel);padding:8px 10px;border-radius:10px;cursor:pointer}
+  button.primary{background:var(--accent);color:#fff;border-color:transparent}
+  button:active{opacity:.9}
+  input[type="text"]{padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--ink);min-width:220px}
+  main{padding:12px}
+  iframe{width:100%;height:78vh;border:1px solid var(--line);border-radius:12px;background:#fff}
+  .hint{font-size:.9rem;opacity:.8}
+</style>
+</head>
+<body>
+<header>
+  <span class="title">바로 편집 에디터</span>
+  <div class="toolbar">
+    <button id="reload">index.html 불러오기</button>
+    <button id="toggleEdit">편집 켜기</button>
+    <button id="b" onclick="cmd('bold')"><b>B</b></button>
+    <button id="i" onclick="cmd('italic')"><i>I</i></button>
+    <button onclick="cmd('underline')"><u>U</u></button>
+    <button onclick="cmd('insertUnorderedList')">• 목록</button>
+    <button onclick="cmd('insertOrderedList')">1. 목록</button>
+    <button onclick="mk('h1')">H1</button>
+    <button onclick="mk('h2')">H2</button>
+    <input id="linkUrl" placeholder="https:// 링크">
+    <button onclick="makeLink()">링크</button>
+    <button onclick="cmd('undo')">↶</button>
+    <button onclick="cmd('redo')">↷</button>
+    <button class="primary" id="save">index.html 내보내기(편집본)</button>
+  </div>
+  <span class="hint">미리보기 안 텍스트를 직접 선택/타이핑하세요. (모바일도 가능)</span>
+</header>
+<main>
+  <iframe id="frame" title="편집 프리뷰"></iframe>
+</main>
+<script>
+const frame = document.getElementById('frame');
+const reloadBtn = document.getElementById('reload');
+const toggleBtn = document.getElementById('toggleEdit');
+const saveBtn = document.getElementById('save');
+
+function loadIndex(){
+  // Load local index.html into iframe (same folder)
+  frame.src = 'index.html';
+}
+function enableEdit(on){
+  const doc = frame.contentDocument || frame.contentWindow.document;
+  if(!doc || !doc.body){ alert('먼저 "index.html 불러오기"를 눌러 주세요.'); return; }
+  doc.designMode = on ? 'on' : 'off';
+  toggleBtn.textContent = on ? '편집 끄기' : '편집 켜기';
+}
+
+function cmd(command, value=null){
+  const doc = frame.contentDocument || frame.contentWindow.document;
+  if(!doc){ return; }
+  doc.execCommand(command, false, value);
+}
+
+function mk(tag){
+  const doc = frame.contentDocument || frame.contentWindow.document;
+  if(!doc){ return; }
+  // Wrap selection with heading; fallback to formatBlock
+  doc.execCommand('formatBlock', false, tag);
+}
+
+function makeLink(){
+  const url = document.getElementById('linkUrl').value.trim() || prompt('링크 URL을 입력하세요:');
+  if(!url) return;
+  cmd('createLink', url);
+}
+
+function download(filename, text){
+  const blob = new Blob([text], {type:'text/html;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href), 1000);
+  a.remove();
+}
+
+reloadBtn.addEventListener('click', () => {
+  loadIndex();
+  // re-enable edit after load completes
+  frame.addEventListener('load', () => enableEdit(true), {once:true});
+});
+
+toggleBtn.addEventListener('click', () => {
+  const doc = frame.contentDocument || frame.contentWindow.document;
+  if(!doc){ alert('먼저 "index.html 불러오기"를 눌러 주세요.'); return; }
+  const on = doc.designMode !== 'on';
+  enableEdit(on);
+});
+
+saveBtn.addEventListener('click', () => {
+  const doc = frame.contentDocument || frame.contentWindow.document;
+  if(!doc){ alert('먼저 불러오기를 해주세요.'); return; }
+  // Preserve doctype
+  const html = '<!doctype html>\n' + doc.documentElement.outerHTML;
+  download('index.html', html);
+});
+
+// Auto initial load
+loadIndex();
+frame.addEventListener('load', () => enableEdit(true), {once:true});
+</script>
+</body>
+</html>

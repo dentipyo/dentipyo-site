@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>사이트 에디터 · No-Code + Inline</title>
+  <meta name="color-scheme" content="light dark">
+  <style>
+    :root{
+      --bg:#0b132b;--panel:#111a33;--ink:#e8eefc;--muted:#a9b4c7;--accent:#4d7cff;--line:#223058;
+    }
+    @media (prefers-color-scheme: light){
+      :root{ --bg:#f6f8fb; --panel:#ffffff; --ink:#0b132b; --muted:#4f5d75; --accent:#1849ab; --line:#e5e8ef; }
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Apple SD Gothic Neo,Noto Sans KR,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);}
+    header{position:sticky;top:0;background:var(--panel);border-bottom:1px solid var(--line);padding:10px 16px;z-index:5}
+    header h1{margin:0;font-size:1.05rem}
+    main{display:grid;grid-template-columns:340px 1fr;gap:16px;padding:16px;align-items:start}
+    @media (max-width:900px){ main{grid-template-columns:1fr} }
+    .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px}
+    label{display:grid;gap:6px;margin-bottom:10px;font-size:0.92rem}
+    input,textarea{width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;background:transparent;color:var(--ink)}
+    textarea{min-height:80px}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+    button{background:var(--accent);color:white;border:none;padding:10px 14px;border-radius:10px;cursor:pointer}
+    button.secondary{background:transparent;border:1px solid var(--line);color:var(--ink)}
+    iframe{width:100%;height:72vh;border:1px solid var(--line);border-radius:12px;background:white}
+    small.help{color:var(--muted)}
+    .pill{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:4px 8px;margin:2px}
+    details{margin-top:8px}
+    .bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:8px 0}
+    .bar input[type="checkbox"]{width:18px;height:18px}
+    .hint{font-size:.9rem;color:var(--muted)}
+  </style>
+</head>
+<body>
+<header>
+  <h1>개인 홈페이지 · No-Code 에디터 (폼 편집 + 직접 편집)</h1>
+</header>
+<main>
+  <section class="card">
+    <h2 style="margin-top:0">기본 정보</h2>
+    <p class="hint">※ 좌측 폼으로 내용을 채운 뒤, 필요하면 우측 미리보기에서 <b>직접 클릭하여</b> 글자를 수정할 수 있습니다.</p>
+    <label>성함/직함
+      <input id="name" placeholder="표세욱 교수 · 치과보철학">
+    </label>
+    <div class="row">
+      <label>소속(한글)
+        <input id="aff_ko" placeholder="연세대학교 치과대학 · 강남세브란스치과병원 치과보철과">
+      </label>
+      <label>Affiliation(EN)
+        <input id="aff_en" placeholder="Yonsei Univ., Dept. of Prosthodontics · Gangnam Severance Dental Hospital">
+      </label>
+    </div>
+    <label>이메일
+      <input id="email" placeholder="your.name@yonsei.ac.kr">
+    </label>
+    <label>한 줄 슬로건(KO)
+      <input id="hero_ko" placeholder="임상과 연구를 연결하는 디지털 보철학">
+    </label>
+    <label>Tagline (EN)
+      <input id="hero_en" placeholder="Connecting Clinic and Research in Digital Prosthodontics">
+    </label>
+    <label>소개문(KO)
+      <textarea id="intro_ko" placeholder="임플란트 보철, 디지털 덴티스트리, AI 영상진단을 아우르는 연구·진료를 수행합니다."></textarea>
+    </label>
+    <label>Intro (EN)
+      <textarea id="intro_en" placeholder="Research and clinical practice across implant prosthodontics, digital dentistry, and AI-driven imaging."></textarea>
+    </label>
+    <div class="row">
+      <label>Google Scholar URL
+        <input id="scholar" placeholder="https://scholar.google.com/...">
+      </label>
+      <label>ORCID URL
+        <input id="orcid" placeholder="https://orcid.org/0000-0000-0000-0000">
+      </label>
+    </div>
+    <label>ResearchGate URL
+      <input id="rg" placeholder="https://www.researchgate.net/profile/...">
+    </label>
+
+    <details>
+      <summary>연구/진료/관심 분류</summary>
+      <label>연구 분야 #1
+        <input id="r1" placeholder="임플란트 안정성 · 동요도">
+      </label>
+      <label>설명 #1
+        <textarea id="r1d" placeholder="솔레노이드 기반 동적 하중/미세변위 측정, RFA/DCA 비교, 주위골 소실 모델링."></textarea>
+      </label>
+      <label>연구 분야 #2
+        <input id="r2" placeholder="디지털 덴티스트리">
+      </label>
+      <label>설명 #2
+        <textarea id="r2d" placeholder="3D 프린팅 덴처, IOS-인상 통합(iBIS) 워크플로우, CAD/CAM 보철 정확도."></textarea>
+      </label>
+      <label>연구 분야 #3
+        <input id="r3" placeholder="AI·영상">
+      </label>
+      <label>설명 #3
+        <textarea id="r3d" placeholder="국산 임플란트 방사선 빅데이터 구축, 커넥션 유형 자동 식별, 임상 의사결정 지원."></textarea>
+      </label>
+      <label>진료분야(쉼표로 구분)
+        <input id="clinical" placeholder="임플란트 보철, 전체·부분의치, 심미수복, 교합 재건, 디지털 진료">
+      </label>
+      <label>관심분야
+        <textarea id="interests" placeholder="임플란트-연조직 상호작용, 기계학습 기반 영상 판독, 디지털 보철 설계, 기능 분석(EMG/음성/저작) 등."></textarea>
+      </label>
+    </details>
+
+    <details>
+      <summary>연구실 모집/연락</summary>
+      <label>모집 리드 문구
+        <input id="lab_lead" placeholder="의료AI·디지털 보철 융합 연구에 관심 있는 분을 상시 모집합니다.">
+      </label>
+      <label>모집 분야(줄바꿈으로 구분)
+        <textarea id="lab_roles" placeholder="치과보철학(임상/연구): 임플란트 보철, 디지털 덴처&#10;의료영상·AI: 방사선 영상 라벨링/모델링&#10;공학(전기/기계): 계측장치 개발, 신호처리"></textarea>
+      </label>
+      <label>지원 안내(줄바꿈으로 구분, 번호 자동)
+        <textarea id="lab_steps" placeholder="이메일 제목: [지원] 성함/전공/희망학위(또는 연구원)&#10;제출: CV(필수), 성적표/포트폴리오(선택), 관심 주제 1쪽&#10;우대: Python/Matlab, CAD, 3D프린팅, 임상 데이터 경험"></textarea>
+      </label>
+      <label>주소
+        <input id="addr" placeholder="서울특별시 강남구 언주로 211, 강남세브란스치과병원">
+      </label>
+    </details>
+
+    <details>
+      <summary>출판/소식</summary>
+      <label>최근 논문/발표 (줄바꿈: "제목 — 연도, 저널/설명")</label>
+      <textarea id="pubs" placeholder="Electromagnetic loading system for lateral micro-displacement of dental implants — 2025, Experimental study&#10;Radiographic AI for Korean implant connection identification — 2025, Proposal/DB study"></textarea>
+      <label>소식 (줄바꿈: "YYYY-MM-DD | 내용")</label>
+      <textarea id="news" placeholder="2025-10-12 | 연구실 홈페이지 1.0 공개&#10;2025-09-27 | ITI Study Club 강남: 임플란트 핸즈온 세션 진행"></textarea>
+    </details>
+
+    <div class="btns">
+      <button id="previewBtn">미리보기 업데이트</button>
+      <button id="exportBtn">index.html 내보내기(폼 기반)</button>
+      <button id="exportEditedBtn" class="secondary">index.html 내보내기(직접 편집본)</button>
+    </div>
+    <div class="bar">
+      <input type="checkbox" id="inlineEdit">
+      <label for="inlineEdit" class="hint">직접 편집 모드(미리보기를 클릭해서 글자 수정)</label>
+    </div>
+    <small class="help">※ “직접 편집 모드”가 켜지면 미리보기 영역에서 아무 텍스트나 선택 후 바로 타이핑해 수정할 수 있습니다. 폼과는 별개로 동작합니다.</small>
+  </section>
+
+  <section class="card">
+    <iframe id="preview" title="미리보기"></iframe>
+  </section>
+</main>
+
+<script>
+function buildIndex(model){
+  const esc = (s)=> (s||"").toString();
+  const pubs = esc(model.pubs).split(/\n+/).filter(Boolean).map(l=>`<li>${l.replace(/^(.*?)(\s+—\s+)(.*)$/,'<span class="pub-title">$1</span> — $3')}</li>`).join('\n');
+  const news = esc(model.news).split(/\n+/).filter(Boolean).map(l=>{
+    const m = l.split('|'); const date=(m[0]||'').trim(); const text=(m[1]||'').trim();
+    return `<li><time datetime="${date}">${date}</time> ${text}</li>`;
+  }).join('\n');
+  const roles = esc(model.lab_roles).split(/\n+/).filter(Boolean).map(x=>`<li>${x}</li>`).join('\n');
+  const steps = esc(model.lab_steps).split(/\n+/).filter(Boolean).map(x=>`<li>${x}</li>`).join('\n');
+  const clinical = esc(model.clinical).split(',').map(s=>s.trim()).filter(Boolean).map(s=>`<li>${s}</li>`).join('');
+
+  return `<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>${esc(model.name)} · 치과보철학</title>
+  <meta name="description" content="${esc(model.hero_ko)} — 약력, 연구·진료분야, 연구실 모집 안내">
+  <link rel="icon" type="image/png" href="assets/favicon.png">
+  <meta property="og:title" content="${esc(model.name)} · 치과보철학">
+  <meta property="og:description" content="${esc(model.hero_ko)}"><meta name="color-scheme" content="light dark">
+  <link rel="stylesheet" href="styles.css"><script defer src="script.js"></script>
+</head>
+<body>
+<header class="site-header" role="banner">
+  <div class="container">
+    <div class="brand"><div class="avatar" aria-hidden="true">D</div>
+      <div><h1 class="site-title">${esc(model.name)}</h1><p class="site-subtitle">${esc(model.aff_en)}</p></div>
+    </div>
+    <nav aria-label="주요 메뉴" class="primary-nav">
+      <a href="#about">약력</a><a href="#research">연구분야</a><a href="#clinical">진료분야</a><a href="#interests">관심분야</a>
+      <a href="#lab">연구실 모집</a><a href="#publications">논문/발표</a><a href="#news">소식</a><a href="#contact">연락</a>
+    </nav><button id="langToggle" class="lang-toggle" aria-label="언어 전환">EN</button>
+  </div>
+</header>
+<main id="content">
+  <section id="hero" class="hero"><div class="container">
+    <h2 data-ko="${esc(model.hero_ko)}" data-en="${esc(model.hero_en)}">${esc(model.hero_ko)}</h2>
+    <p data-ko="${esc(model.intro_ko)}" data-en="${esc(model.intro_en)}">${esc(model.intro_ko)}</p>
+    <a class="cta" href="#lab" data-ko="대학원/연구원 모집 안내" data-en="Join the Lab">대학원/연구원 모집 안내</a>
+  </div></section>
+
+  <section id="about" class="section"><div class="container two-col">
+    <div><h3>개인 약력</h3>
+      <ul class="kv">
+        <li><span>소속</span><span>${esc(model.aff_ko)}</span></li>
+        <li><span>직위</span><span>교수 (Prosthodontist)</span></li>
+        <li><span>이메일</span><span><a href="mailto:${esc(model.email)}">${esc(model.email)}</a></span></li>
+      </ul><p class="lead">${esc(model.intro_ko)}</p>
+    </div>
+    <aside class="card"><h4>빠른 링크</h4>
+      <ul class="links">
+        <li><a href="${esc(model.scholar) || '#'}">Google Scholar</a></li>
+        <li><a href="${esc(model.orcid) || '#'}">ORCID</a></li>
+        <li><a href="${esc(model.rg) || '#'}">ResearchGate</a></li>
+      </ul>
+    </aside>
+  </div></section>
+
+  <section id="research" class="section alt"><div class="container">
+    <h3>연구분야</h3>
+    <div class="grid-3">
+      <div class="feature"><h4>${esc(model.r1)}</h4><p>${esc(model.r1d)}</p></div>
+      <div class="feature"><h4>${esc(model.r2)}</h4><p>${esc(model.r2d)}</p></div>
+      <div class="feature"><h4>${esc(model.r3)}</h4><p>${esc(model.r3d)}</p></div>
+    </div>
+  </div></section>
+
+  <section id="clinical" class="section">
+    <div class="container"><h3>진료분야</h3><ul class="pill-list">${clinical}</ul>
+      <p class="note">진료 예약 및 협진 문의는 병원 콜센터 또는 이메일로 연락 바랍니다.</p>
+    </div>
+  </section>
+
+  <section id="interests" class="section alt"><div class="container">
+    <h3>관심분야</h3><p>${esc(model.interests)}</p>
+  </div></section>
+
+  <section id="lab" class="section"><div class="container two-col">
+    <div><h3>연구실 모집 (대학원/연구원)</h3><p class="lead">${esc(model.lab_lead)}</p>
+      <h4>모집 분야</h4><ul>${roles}</ul><h4>지원 안내</h4><ol>${steps}</ol>
+    </div>
+    <aside class="card"><h4>연락/위치</h4>
+      <ul class="kv"><li><span>이메일</span><span><a href="mailto:${esc(model.email)}">${esc(model.email)}</a></span></li>
+        <li><span>주소</span><span>${esc(model.addr)}</span></li></ul>
+    </aside>
+  </div></section>
+
+  <section id="publications" class="section alt"><div class="container">
+    <h3>논문/발표 (최근)</h3><ul class="pubs">${pubs}</ul>
+    <p class="note">전체 목록은 Google Scholar/ORCID에서 확인하세요.</p>
+  </div></section>
+
+  <section id="news" class="section"><div class="container"><h3>소식</h3><ul class="news">${news}</ul></div></section>
+
+  <section id="contact" class="section alt"><div class="container two-col">
+    <div><h3>연락처</h3>
+      <p>이메일: <a href="mailto:${esc(model.email)}">${esc(model.email)}</a><br>주소: ${esc(model.addr)}</p>
+      <p class="note">외래/협진/연구 협력 문의를 환영합니다.</p>
+    </div>
+    <form class="card" aria-label="간단 연락 폼" onsubmit="event.preventDefault(); alert('감사합니다. 메일로 회신드리겠습니다.');">
+      <h4>문의하기</h4>
+      <label>성함 <input required></label>
+      <label>이메일 <input type="email" required></label>
+      <label>메시지 <textarea rows="4" required></textarea></label>
+      <button type="submit">보내기</button>
+    </form>
+  </div></section>
+</main>
+<footer class="site-footer"><div class="container">
+  <small>© <span id="year"></span> ${esc(model.name)}. All rights reserved.</small>
+</div></footer>
+<script defer src="script.js"></script>
+</body></html>`;
+}
+
+function getModel(){
+  const g = id => document.getElementById(id).value.trim();
+  return {
+    name: g('name') || '성함 교수 · 치과보철학',
+    aff_ko: g('aff_ko') || '연세대학교 치과대학 · 강남세브란스치과병원 치과보철과',
+    aff_en: g('aff_en') || 'Yonsei Univ., Dept. of Prosthodontics · Gangnam Severance Dental Hospital',
+    email: g('email') || 'your.name@yonsei.ac.kr',
+    hero_ko: g('hero_ko') || '임상과 연구를 연결하는 디지털 보철학',
+    hero_en: g('hero_en') || 'Connecting Clinic and Research in Digital Prosthodontics',
+    intro_ko: g('intro_ko') || '임플란트 보철, 디지털 덴티스트리, AI 영상진단을 아우르는 연구·진료를 수행합니다.',
+    intro_en: g('intro_en') || 'Research and clinical practice across implant prosthodontics, digital dentistry, and AI-driven imaging.',
+    scholar: g('scholar'), orcid: g('orcid'), rg: g('rg'),
+    r1: g('r1') || '임플란트 안정성 · 동요도', r1d: g('r1d') || '솔레노이드 기반 동적 하중/미세변위 측정, RFA/DCA 비교, 주위골 소실 모델링.',
+    r2: g('r2') || '디지털 덴티스트리', r2d: g('r2d') || '3D 프린팅 덴처, IOS-인상 통합(iBIS) 워크플로우, CAD/CAM 보철 정확도.',
+    r3: g('r3') || 'AI·영상', r3d: g('r3d') || '국산 임플란트 방사선 빅데이터 구축, 커넥션 유형 자동 식별, 임상 의사결정 지원.',
+    clinical: g('clinical') || '임플란트 보철, 전체·부분의치, 심미수복, 교합 재건, 디지털 진료',
+    interests: g('interests') || '임플란트-연조직 상호작용, 기계학습 기반 영상 판독, 맞춤형 디지털 보철 설계, 기능 분석(EMG/음성/저작) 등.',
+    lab_lead: g('lab_lead') || '의료AI·디지털 보철 융합 연구에 관심 있는 분을 상시 모집합니다.',
+    lab_roles: g('lab_roles'),
+    lab_steps: g('lab_steps'),
+    addr: g('addr') || '서울특별시 강남구 언주로 211, 강남세브란스치과병원',
+    pubs: g('pubs') || 'Electromagnetic loading system for lateral micro-displacement of dental implants — 2025, Experimental study',
+    news: g('news') || '2025-10-12 | 연구실 홈페이지 1.0 공개'
+  };
+}
+
+function setPreviewHTML(html){
+  const iframe = document.getElementById('preview');
+  iframe.srcdoc = html; // same-origin for inline editing
+}
+
+function refreshPreview(){
+  const html = buildIndex(getModel());
+  setPreviewHTML(html);
+}
+
+function download(filename, text, mime='text/html'){
+  const blob = new Blob([text], {type: mime+';charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href), 1000);
+  a.remove();
+}
+
+document.getElementById('previewBtn').addEventListener('click', refreshPreview);
+document.getElementById('exportBtn').addEventListener('click', () => {
+  const html = buildIndex(getModel());
+  download('index.html', html);
+});
+
+document.getElementById('exportEditedBtn').addEventListener('click', () => {
+  const iframe = document.getElementById('preview');
+  const doc = iframe.contentDocument || iframe.contentWindow.document;
+  if(!doc){ alert('미리보기가 아직 로드되지 않았습니다. 먼저 "미리보기 업데이트"를 눌러주세요.'); return; }
+  const html = '<!doctype html>\n' + doc.documentElement.outerHTML;
+  download('index.html', html);
+});
+
+document.getElementById('inlineEdit').addEventListener('change', (e) => {
+  const iframe = document.getElementById('preview');
+  const doc = iframe.contentDocument || iframe.contentWindow.document;
+  if(!doc){ alert('먼저 "미리보기 업데이트"를 눌러 미리보기를 띄워주세요.'); e.target.checked=false; return; }
+  if(e.target.checked){
+    // Enable inline editing on common text containers
+    doc.designMode = 'on';
+    // helpful styles
+    const hl = doc.createElement('style');
+    hl.textContent = '*:focus{ outline: 2px dashed #4d7cff; outline-offset: 2px; }';
+    doc.head.appendChild(hl);
+    alert('직접 편집 모드가 켜졌습니다. 미리보기의 텍스트를 클릭하고 타이핑해서 수정하세요.');
+  }else{
+    doc.designMode = 'off';
+  }
+});
+
+// Initial preview
+refreshPreview();
+</script>
+</body>
+</html>

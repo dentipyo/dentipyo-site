@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>간단 에디터 (자동 미리보기)</title>
+<style>
+  body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Apple SD Gothic Neo,Noto Sans KR,Helvetica,Arial,sans-serif;margin:0;background:#f7f9fc;color:#111}
+  header{position:sticky;top:0;background:#fff;border-bottom:1px solid #e5e8ef;padding:12px 16px}
+  main{display:grid;grid-template-columns:1fr;gap:10px;padding:12px}
+  .panel{background:#fff;border:1px solid #e5e8ef;border-radius:12px;padding:12px}
+  label{display:block;margin:8px 0 4px}
+  textarea,input{width:100%;padding:10px;border:1px solid #d9deea;border-radius:10px;font-size:16px}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .btn{display:block;width:100%;padding:14px 16px;margin-top:10px;font-size:18px;border:none;border-radius:12px;background:#1849ab;color:#fff}
+  .btn:active{opacity:.9}
+  iframe{width:100%;height:70vh;border:1px solid #e5e8ef;border-radius:12px;background:#fff}
+  small{color:#667}
+</style>
+</head>
+<body>
+<header><strong>간단 에디터(자동 미리보기)</strong> — 입력만 하면 오른쪽 미리보기가 자동 갱신됩니다.</header>
+<main>
+  <section class="panel">
+    <div class="row">
+      <div>
+        <label>페이지 제목</label>
+        <input id="name" placeholder="성함 교수 · 치과보철학">
+      </div>
+      <div>
+        <label>이메일</label>
+        <input id="email" placeholder="your.name@yonsei.ac.kr">
+      </div>
+    </div>
+    <label>소속(한글)</label>
+    <input id="aff_ko" placeholder="연세대학교 치과대학 · 강남세브란스치과병원 치과보철과">
+    <label>Affiliation (EN)</label>
+    <input id="aff_en" placeholder="Yonsei Univ., Dept. of Prosthodontics · Gangnam Severance Dental Hospital">
+    <label>한 줄 슬로건(KO)</label>
+    <input id="hero_ko" placeholder="임상과 연구를 연결하는 디지털 보철학">
+    <label>소개문(KO)</label>
+    <textarea id="intro_ko" placeholder="임플란트 보철, 디지털 덴티스트리, AI 영상진단을 아우르는 연구·진료를 수행합니다."></textarea>
+    <label>진료분야(쉼표로 구분)</label>
+    <input id="clinical" placeholder="임플란트 보철, 전체·부분의치, 심미수복, 교합 재건, 디지털 진료">
+    <label>최근 논문/발표 (줄바꿈: '제목 — 연도, 저널/설명')</label>
+    <textarea id="pubs" placeholder="Electromagnetic loading system for lateral micro-displacement of dental implants — 2025, Experimental study"></textarea>
+    <label>소식 (줄바꿈: 'YYYY-MM-DD | 내용')</label>
+    <textarea id="news" placeholder="2025-10-12 | 연구실 홈페이지 1.0 공개"></textarea>
+    <button class="btn" id="exportBtn" type="button">index.html 내보내기</button>
+    <small>※ 입력하면 자동으로 미리보기가 갱신됩니다. 내보내기만 누르면 저장됩니다.</small>
+  </section>
+  <section class="panel">
+    <iframe id="preview" title="미리보기"></iframe>
+  </section>
+</main>
+<script>
+const $ = id => document.getElementById(id);
+const fields = ['name','email','aff_ko','aff_en','hero_ko','intro_ko','clinical','pubs','news'];
+
+function model(){
+  const m={};
+  fields.forEach(f=> m[f]=($(f).value||'').trim());
+  if(!m.name) m.name='성함 교수 · 치과보철학';
+  if(!m.hero_ko) m.hero_ko='임상과 연구를 연결하는 디지털 보철학';
+  if(!m.intro_ko) m.intro_ko='임플란트 보철, 디지털 덴티스트리, AI 영상진단을 아우르는 연구·진료를 수행합니다.';
+  if(!m.aff_ko) m.aff_ko='연세대학교 치과대학 · 강남세브란스치과병원 치과보철과';
+  if(!m.aff_en) m.aff_en='Yonsei Univ., Dept. of Prosthodontics · Gangnam Severance Dental Hospital';
+  if(!m.clinical) m.clinical='임플란트 보철, 전체·부분의치, 심미수복, 교합 재건, 디지털 진료';
+  if(!m.pubs) m.pubs='Electromagnetic loading system for lateral micro-displacement of dental implants — 2025, Experimental study';
+  if(!m.news) m.news='2025-10-12 | 연구실 홈페이지 1.0 공개';
+  return m;
+}
+
+function build(m){
+  const pubs = m.pubs.split(/\n+/).filter(Boolean).map(l=>`<li>${l.replace(/^(.*?)(\s+—\s+)(.*)$/,'<span class="pub-title">$1</span> — $3')}</li>`).join('');
+  const news = m.news.split(/\n+/).filter(Boolean).map(l=>{
+    const [d,t] = l.split('|'); return `<li><time datetime="${(d||'').trim()}">${(d||'').trim()}</time> ${(t||'').trim()}</li>`;
+  }).join('');
+  const clinical = m.clinical.split(',').map(s=>s.trim()).filter(Boolean).map(s=>`<li>${s}</li>`).join('');
+
+  return `<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>${m.name} · 치과보철학</title>
+<link rel="stylesheet" href="styles.css"><script defer src="script.js"></script></head>
+<body>
+<header class="site-header"><div class="container">
+  <div class="brand"><div class="avatar">D</div><div>
+    <h1 class="site-title">${m.name}</h1><p class="site-subtitle">${m.aff_en}</p></div></div>
+  <nav class="primary-nav"><a href="#about">약력</a><a href="#research">연구분야</a><a href="#clinical">진료분야</a><a href="#interests">관심분야</a><a href="#lab">연구실 모집</a><a href="#publications">논문/발표</a><a href="#news">소식</a><a href="#contact">연락</a></nav>
+  <button id="langToggle" class="lang-toggle">EN</button>
+</div></header>
+<main id="content">
+  <section id="hero" class="hero"><div class="container">
+    <h2 data-ko="${m.hero_ko}" data-en="">${m.hero_ko}</h2>
+    <p data-ko="${m.intro_ko}" data-en="">${m.intro_ko}</p>
+    <a class="cta" href="#lab" data-ko="대학원/연구원 모집 안내">대학원/연구원 모집 안내</a>
+  </div></section>
+  <section id="about" class="section"><div class="container two-col">
+    <div><h3>개인 약력</h3><ul class="kv">
+      <li><span>소속</span><span>${m.aff_ko}</span></li>
+      <li><span>직위</span><span>교수 (Prosthodontist)</span></li>
+      <li><span>이메일</span><span><a href="mailto:${m.email}">${m.email}</a></span></li>
+    </ul><p class="lead">${m.intro_ko}</p></div>
+    <aside class="card"><h4>빠른 링크</h4><ul class="links">
+      <li><a href="#">Google Scholar</a></li><li><a href="#">ORCID</a></li><li><a href="#">ResearchGate</a></li></ul>
+    </aside>
+  </div></section>
+  <section id="clinical" class="section"><div class="container"><h3>진료분야</h3><ul class="pill-list">${clinical}</ul></div></section>
+  <section id="publications" class="section alt"><div class="container"><h3>논문/발표 (최근)</h3><ul class="pubs">${pubs}</ul></div></section>
+  <section id="news" class="section"><div class="container"><h3>소식</h3><ul class="news">${news}</ul></div></section>
+  <section id="contact" class="section alt"><div class="container"><h3>연락처</h3><p>이메일: <a href="mailto:${m.email}">${m.email}</a></p></div></section>
+</main>
+<footer class="site-footer"><div class="container"><small>© <span id="year"></span> ${m.name}</small></div></footer>
+</body></html>`;
+}
+
+function update(){
+  const html = build(model());
+  $('preview').srcdoc = html;
+}
+
+// Auto update on any input
+fields.forEach(id=> $(id).addEventListener('input', update));
+
+// Export button
+$('exportBtn').addEventListener('click', () => {
+  const html = build(model());
+  const blob = new Blob([html], {type:'text/html;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'index.html';
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href), 1000);
+  a.remove();
+});
+
+// Initial render
+update();
+</script>
+</body>
+</html>
